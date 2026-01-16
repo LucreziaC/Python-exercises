@@ -1,6 +1,9 @@
 #from functions import get_todos, write_todo
 import functions
+import time
 
+now= time.strftime("%b %d, %Y %h:%M:S")
+print("It is", now)
 
 prompt = "type add,show, edit, complete or exit: "
 

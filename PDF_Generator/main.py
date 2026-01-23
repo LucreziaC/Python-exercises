@@ -12,6 +12,10 @@ for index, row in df.iterrows():
     pdf.set_text_color(100,100,100) #RGB color
     pdf.cell(w=0, h=12, txt=row["Topic"], align="L", ln = 1)
     pdf.line(10, 22, 200,22)
+    for numR in range(row["Pages"])-1:
+        pdf.add_page()
+    
+    
 
 
 

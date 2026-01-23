@@ -3,3 +3,7 @@ Task_Manager_App/.vscode
 Task_Manager_App/.venv
 Task_Manager_App/build
 Task_Manager_App/dist
+
+
+PDF_Generator/output.pdf
+PDF_Generator/.venv

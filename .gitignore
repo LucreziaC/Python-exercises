@@ -7,3 +7,5 @@ Task_Manager_App/dist
 
 PDF_Generator/output.pdf
 PDF_Generator/.venv
+Email_News_App/.vscode/launch.json
+Email_News_App/nasa_apod/__pycache__/

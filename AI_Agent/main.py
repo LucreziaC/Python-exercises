@@ -21,9 +21,9 @@ proxy_url = os.getenv("PROXY_URL")
 
 
 @tool
-def add_task():
+def add_task(task):
     """add a new task to the user's task list"""
-    print("Adding a task")
+    print(task)
     print("Task added")
 
 

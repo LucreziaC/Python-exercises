@@ -9,6 +9,8 @@ from langchain.tools import tool
 from langchain.agents import create_agent, AgentState
 from langchain_core.prompts import MessagesPlaceholder
 from langchain_core.callbacks import StdOutCallbackHandler
+from todoist_api_python.api import TodoistAPI
+
 
 
 
@@ -20,11 +22,18 @@ proxy_url = os.getenv("PROXY_URL")
 # os.environ['NO_PROXY'] = 'googleapis.com,google.com,gstatic.com,*.googleusercontent.com'
 
 
+# Evitiamo proxy per Todoist
+os.environ["NO_PROXY"] = "api.todoist.com"
+
+todoist = TodoistAPI(f"{todoist_api_key}")
+
+
 @tool
-def add_task(task):
+def add_task(task:str):
     """add a new task to the user's task list"""
     print(task)
     print("Task added")
+    todoist.add_task(content=task)
 
 
 
@@ -42,8 +51,8 @@ llm = ChatGoogleGenerativeAI(
 )
 
 #system_prompt: specify the domain in which answer user prompt
-system_prompt = "you are a helpgul assistant. You will help the user add tasks."
-user_input = "What day is it today?"
+system_prompt = "you are a helpful assistant. You will help the user add tasks."
+user_input = "Add the task to do my homework"
 
 #prompt: used in chan not in agent
 prompt = ChatPromptTemplate([
@@ -65,6 +74,8 @@ response = agent.invoke(
     )
 
 ai_msg = response['messages'][1]
-text = ai_msg.content[0]['text']
+#text = ai_msg.content[0]['text']
 
 print(text)
+
+

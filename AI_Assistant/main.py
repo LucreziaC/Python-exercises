@@ -5,6 +5,8 @@ from langchain_core.messages import HumanMessage, AIMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import StrOutputParser
+import gradio as gr
+from gradio import themes
 
 load_dotenv()
 
@@ -21,7 +23,7 @@ Answer in 2-6 sentences.
 you should have a sense of humor
 """
 
-user_input = input("You: ")
+#user_input = input()
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
@@ -46,24 +48,55 @@ chain = prompt | llm | StrOutputParser()
 print("Hi! I'm albert, how can I help you today?")
 history = []
 
+langchain_history=[]
+def chat(user_input, hist):
+    #print(user_in, hist)
+    
+    for item in hist:
+        if item['role'] == 'user': 
+            langchain_history.append(HumanMessage(content=item['content']))
+        elif item['role'] == 'assistant':
+            langchain_history.append(AIMessage(content= item['content']))
+    response = chain.invoke({"input": user_input, "history": langchain_history})
+    
+    return "", hist + [{'role': 'user', 'content': user_input},
+                       {'role':'assistant', 'content':response}]
 
 """the commented rows are related to memorizing history without using langchain"""
-while True:
-    user_input = input("You: ")
-    if user_input == "exit":
-        break
-    #history.append({"role": "user", "content": user_input})
-    response = chain.invoke({"input": user_input, "history": history})
-    #response = llm.invoke(
-        #[
-        #    {"role": "system", "content": system_prompt}
-            # {"role": "user", "content": user_input},
-      #  ]
-      #  + history
-    #)
-    #history.append({"role": "system", "content": system_prompt})
-    history.append(HumanMessage(content=user_input))
+# while True:
+#     user_input = input("You: ")
+#     if user_input == "exit":
+#         break
+#     #history.append({"role": "user", "content": user_input})
+#     response = chain.invoke({"input": user_input, "history": history})
+#     #response = llm.invoke(
+#         #[
+#         #    {"role": "system", "content": system_prompt}
+#             # {"role": "user", "content": user_input},
+#       #  ]
+#       #  + history
+#     #)
+#     #history.append({"role": "system", "content": system_prompt})
+#     history.append(HumanMessage(content=user_input))
 
-    history.append(response)
+#     history.append(response)
 
-    print(f"Albert: {response}")
+#     print(f"Albert: {response}")
+    
+page = gr.Blocks(
+    title="Chat with Einstein",
+    theme=themes.Ocean()
+)
+
+with page:
+    gr.Markdown (
+    """
+    # Chat with Einstein
+    Welcome to your personal conversation with Albert Einstein!
+    """
+    )
+    chatbot = gr.Chatbot()
+    msg = gr.Textbox()
+    msg.submit(chat, [msg, chatbot],[msg, chatbot])
+    button = gr.Button("Clear chat")
+    page.launch()

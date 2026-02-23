@@ -82,6 +82,9 @@ def chat(user_input, hist):
 #     history.append(response)
 
 #     print(f"Albert: {response}")
+
+def clear_chat():
+    return "",[]
     
 page = gr.Blocks(
     title="Chat with Einstein",
@@ -95,8 +98,9 @@ with page:
     Welcome to your personal conversation with Albert Einstein!
     """
     )
-    chatbot = gr.Chatbot()
-    msg = gr.Textbox()
+    chatbot = gr.Chatbot( show_label=False)
+    msg = gr.Textbox(show_label=False, placeholder="Ask Einstein everything")
     msg.submit(chat, [msg, chatbot],[msg, chatbot])
     button = gr.Button("Clear chat")
+    button.click(clear_chat, outputs=[msg, chatbot])
     page.launch()
